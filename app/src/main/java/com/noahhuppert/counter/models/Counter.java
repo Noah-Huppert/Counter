@@ -6,14 +6,18 @@ import java.util.List;
 
 public class Counter {
     public String DEFAULT_SESSION_NAME_PREFIX = "Session";
+    public int id = 0;
     public String name;
     public Calendar creationDate;
+    public int listPosition;
     public List<CounterSession> counterSessions;
 
-    public Counter(String name) {
+    public Counter(int id, String name, int listPosition) {
+        this.id = id;
         this.name = name;
 
         creationDate = Calendar.getInstance();
+        this.listPosition = listPosition;
 
         counterSessions = new ArrayList<>();
         newSession();
@@ -64,6 +68,11 @@ public class Counter {
         }
 
         return avrg;
+    }
+
+    public long getLastUsedDate() {
+        List<Long> counterTimes = getCurrentSession().getCurrentSegment().countTimes;
+        return counterTimes.get(counterTimes.size() -1 );
     }
 
     public CounterSession getCurrentSession() {

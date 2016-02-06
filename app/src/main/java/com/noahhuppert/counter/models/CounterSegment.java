@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CounterSegment {
+    public int id;
     public List<Long> countTimes;
 
-    public CounterSegment() {
+    public CounterSegment(int id) {
+        this.id = id;
         countTimes = new ArrayList<>();
     }
 

@@ -5,11 +5,13 @@ import java.util.Calendar;
 import java.util.List;
 
 public class CounterSession {
+    public int id;
     public String name;
     public Calendar creationDate;
     public List<CounterSegment> counterSegments;
 
-    public CounterSession(String name) {
+    public CounterSession(int id, String name) {
+        this.id = id;
         this.name = name;
 
         creationDate = Calendar.getInstance();
