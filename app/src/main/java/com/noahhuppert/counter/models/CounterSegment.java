@@ -8,10 +8,23 @@ import com.noahhuppert.counter.models.sqlite.DBModel;
 
 import java.util.Calendar;
 
-public class Counter implements DBModel {
+public class CounterSegment implements DBModel {
     public int id = -1;
-    public @Nullable String name;
+    public int counterSessionId = -1;
     public @Nullable Calendar creationDateTime;
+    public float data = -1;
+
+    // Getters
+    public @Nullable CounterSession getCounterSession(SQLiteDatabase db) {
+        if(counterSessionId >= 0) {
+            CounterSession counterSession = new CounterSession();
+            counterSession.loadFromDB(counterSessionId, db);
+
+            return counterSession;
+        }
+
+        return null;
+    }
 
     // DB Model
     @Override
@@ -37,7 +50,7 @@ public class Counter implements DBModel {
     @Override
     public boolean inValidDBState() {
         return  id >= 0 &&
-                name != null &&
-                creationDateTime != null;
+                counterSessionId >= 0 &&
+                creationDateTime != null; // data can be -1 because it is Nullable in the DB
     }
 }
