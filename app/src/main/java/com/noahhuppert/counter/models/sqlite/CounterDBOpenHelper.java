@@ -14,11 +14,17 @@ public class CounterDBOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        CounterDBMigrations.Migration_None_To_0(db);
+        CounterDBMigrations.RunMigrationToBumpVersion(-1, db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        int currentRunningVersion = oldVersion;
 
+        while(currentRunningVersion < newVersion) {
+            CounterDBMigrations.RunMigrationToBumpVersion(currentRunningVersion, db);
+
+            currentRunningVersion ++;
+        }
     }
 }
