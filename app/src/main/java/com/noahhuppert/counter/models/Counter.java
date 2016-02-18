@@ -7,9 +7,12 @@ import android.support.annotation.Nullable;
 
 import com.noahhuppert.counter.models.sqlite.CounterDBContract;
 import com.noahhuppert.counter.models.sqlite.DBModel;
+import com.noahhuppert.counter.models.sqlite.exceptions.DBOperationFailedException;
 import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
 import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class Counter implements DBModel {
@@ -19,17 +22,30 @@ public class Counter implements DBModel {
 
     // DB Model
     @Override
-    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
-        // TODO: Create a List<String> of fields that are incomplete and turn into array to thrown exception
-        int incompleteFields = 0;
+    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException, DBOperationFailedException {
+        ArrayList<String> incompleteFields = new ArrayList<>();
 
-        if(name == null) incompleteFields++;
-        if(creationDateTime == null) incompleteFields++;
+        if(name == null) incompleteFields.add(CounterDBContract.CounterEntry.COLUMN_NAME_NAME);
+        if(creationDateTime == null) incompleteFields.add(CounterDBContract.CounterEntry.COLUMN_NAME_CREATION_DATE_TIME);
 
-        ContentValues values = new ContentValues();
-        values.put(CounterDBContract.CounterEntry._ID, id);
+        if(incompleteFields.size() >= 0) {
+            throw new IncompleteDBModelException((String[]) incompleteFields.toArray());
+        } else {
+            ContentValues values = new ContentValues();
+            values.put(CounterDBContract.CounterEntry.COLUMN_NAME_NAME, name);
 
-        return 0;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            values.put(CounterDBContract.CounterEntry.COLUMN_NAME_CREATION_DATE_TIME, dateFormat.format(creationDateTime.getTime()));
+
+            long id = db.insert(CounterDBContract.CounterEntry.TABLE_NAME, null, values);
+
+            if(id != -1) {
+                this.id = id;
+                return id;
+            } else {
+                throw new DBOperationFailedException(DBOperationFailedException.Operation.INSERT);
+            }
+        }
     }
 
     @Override

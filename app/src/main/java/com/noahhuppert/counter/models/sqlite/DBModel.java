@@ -3,6 +3,7 @@ package com.noahhuppert.counter.models.sqlite;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import com.noahhuppert.counter.models.sqlite.exceptions.DBOperationFailedException;
 import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
 import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
 
@@ -13,7 +14,7 @@ public interface DBModel {
      * @return Id of inserted model
      * @throws IncompleteDBModelException When any field except for the id is not set
      */
-    long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException;
+    long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException, DBOperationFailedException;
 
     /**
      * Sets values of model based on a row in the DB

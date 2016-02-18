@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.noahhuppert.counter.models.sqlite.DBModel;
+import com.noahhuppert.counter.models.sqlite.exceptions.DBOperationFailedException;
 import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
 import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
 
@@ -34,7 +35,7 @@ public class CounterSegment implements DBModel {
 
     // DB Model
     @Override
-    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
+    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException, DBOperationFailedException {
         return 0;
     }
 
