@@ -5,12 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.noahhuppert.counter.models.sqlite.DBModel;
+import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
+import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
 
 import java.util.Calendar;
 
 public class CounterSegment implements DBModel {
-    public int id = -1;
-    public int counterSessionId = -1;
+    public long id = -1;
+    public long counterSessionId = -1;
     public @Nullable Calendar creationDateTime;
     public float data = -1;
 
@@ -18,7 +20,11 @@ public class CounterSegment implements DBModel {
     public @Nullable CounterSession getCounterSession(SQLiteDatabase db) {
         if(counterSessionId >= 0) {
             CounterSession counterSession = new CounterSession();
-            counterSession.loadFromDB(counterSessionId, db);
+            try {
+                counterSession.loadFromDB(counterSessionId, db);
+            } catch (NoSuchRowException e) {
+                // TODO: Handle NoSuchRowException
+            }
 
             return counterSession;
         }
@@ -28,29 +34,23 @@ public class CounterSegment implements DBModel {
 
     // DB Model
     @Override
-    public int insert(@NonNull SQLiteDatabase db) {
+    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
         return 0;
     }
 
     @Override
-    public void loadFromDB(int id, @NonNull SQLiteDatabase db) {
+    public void loadFromDB(long id, @NonNull SQLiteDatabase db) throws NoSuchRowException {
 
     }
 
     @Override
-    public void update(@NonNull SQLiteDatabase db) {
+    public void update(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
 
     }
 
     @Override
-    public void delete(@NonNull SQLiteDatabase db) {
+    public void delete(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
 
     }
 
-    @Override
-    public boolean inValidDBState() {
-        return  id >= 0 &&
-                counterSessionId >= 0 &&
-                creationDateTime != null; // data can be -1 because it is Nullable in the DB
-    }
 }

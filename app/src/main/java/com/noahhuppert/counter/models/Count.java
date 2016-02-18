@@ -5,19 +5,25 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.noahhuppert.counter.models.sqlite.DBModel;
+import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
+import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
 
 import java.util.Calendar;
 
 public class Count implements DBModel {
-    public int id = -1;
-    public int counterSegmentId = -1;
+    public long id = -1;
+    public long counterSegmentId = -1;
     public @Nullable Calendar dateTime;
 
     // Getters
     public @Nullable CounterSegment getCounterSegment(SQLiteDatabase db) {
         if(counterSegmentId >= 0) {
             CounterSegment counterSegment = new CounterSegment();
-            counterSegment.loadFromDB(counterSegmentId, db);
+            try {
+                counterSegment.loadFromDB(counterSegmentId, db);
+            } catch (NoSuchRowException e) {
+                // TODO: Handle NoSuchRowException
+            }
 
             return counterSegment;
         }
@@ -27,29 +33,23 @@ public class Count implements DBModel {
 
     // DB Model
     @Override
-    public int insert(@NonNull SQLiteDatabase db) {
+    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
         return 0;
     }
 
     @Override
-    public void loadFromDB(int id, @NonNull SQLiteDatabase db) {
+    public void loadFromDB(long id, @NonNull SQLiteDatabase db) throws NoSuchRowException {
 
     }
 
     @Override
-    public void update(@NonNull SQLiteDatabase db) {
+    public void update(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
 
     }
 
     @Override
-    public void delete(@NonNull SQLiteDatabase db) {
+    public void delete(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
 
     }
 
-    @Override
-    public boolean inValidDBState() {
-        return  id >= 0 &&
-                counterSegmentId >= 0 &&
-                dateTime != null;
-    }
 }

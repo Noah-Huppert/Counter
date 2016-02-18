@@ -3,17 +3,37 @@ package com.noahhuppert.counter.models.sqlite;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
+import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
+import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
+
 public interface DBModel {
-    int insert(@NonNull SQLiteDatabase db);
-    void loadFromDB(int id, @NonNull SQLiteDatabase db);
-    void update(@NonNull SQLiteDatabase db);
-    void delete(@NonNull SQLiteDatabase db);
+    /**
+     * Inserts model into the provided DB
+     * @param db Database to insert model
+     * @return Id of inserted model
+     * @throws IncompleteDBModelException When any field except for the id is not set
+     */
+    long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException;
 
     /**
-     * Checks to see if the model is in a state where it could be inserted into the DB
-     *
-     * This usually involves checking for null values
-     * @return true if valid, false if not
+     * Sets values of model based on a row in the DB
+     * @param id The id of the row to load
+     * @param db The database to load from
+     * @throws NoSuchRowException When the specified row does not exist
      */
-    boolean inValidDBState();
+    void loadFromDB(long id, @NonNull SQLiteDatabase db) throws NoSuchRowException;
+
+    /**
+     * Updates row in DB based on values in model
+     * @param db Database to update
+     * @throws IncompleteDBModelException When the id field is not set or when there are no values to update
+     */
+    void update(@NonNull SQLiteDatabase db) throws IncompleteDBModelException;
+
+    /**
+     * Deletes model
+     * @param db Database to delete model from
+     * @throws IncompleteDBModelException When the id field is not set
+     */
+    void delete(@NonNull SQLiteDatabase db) throws IncompleteDBModelException;
 }

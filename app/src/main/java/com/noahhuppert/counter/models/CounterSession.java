@@ -5,19 +5,25 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.noahhuppert.counter.models.sqlite.DBModel;
+import com.noahhuppert.counter.models.sqlite.exceptions.IncompleteDBModelException;
+import com.noahhuppert.counter.models.sqlite.exceptions.NoSuchRowException;
 
 import java.util.Calendar;
 
 public class CounterSession implements DBModel {
-    public int id = -1;
-    public int counterId = -1;
+    public long id = -1;
+    public long counterId = -1;
     public @Nullable Calendar creationDateTime;
 
     // Getters
     public @Nullable Counter getCounter(SQLiteDatabase db) {
         if(counterId >= 0) {
             Counter counter = new Counter();
-            counter.loadFromDB(counterId, db);
+            try {
+                counter.loadFromDB(counterId, db);
+            } catch (NoSuchRowException e) {
+                // TODO: Handle NoSuchRowException
+            }
 
             return counter;
         }
@@ -27,29 +33,23 @@ public class CounterSession implements DBModel {
 
     // DB Model
     @Override
-    public int insert(@NonNull SQLiteDatabase db) {
+    public long insert(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
         return 0;
     }
 
     @Override
-    public void loadFromDB(int id, @NonNull SQLiteDatabase db) {
+    public void loadFromDB(long id, @NonNull SQLiteDatabase db) throws NoSuchRowException {
 
     }
 
     @Override
-    public void update(@NonNull SQLiteDatabase db) {
+    public void update(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
 
     }
 
     @Override
-    public void delete(@NonNull SQLiteDatabase db) {
+    public void delete(@NonNull SQLiteDatabase db) throws IncompleteDBModelException {
 
     }
 
-    @Override
-    public boolean inValidDBState() {
-        return  id >= 0 &&
-                counterId >= 0 &&
-                creationDateTime != null;
-    }
 }
